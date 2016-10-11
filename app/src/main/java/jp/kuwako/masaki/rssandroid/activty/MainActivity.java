@@ -21,6 +21,7 @@ public class MainActivity extends BaseActivity {
         // TODO ListViewからadapterにつなぎ、list表示をさせる
         // TODO ArticleのviewItemを作成する
         // TODO URLに接続し、RSS取得
+        // TODO ButtenKnife入れる
     }
 
     @Override
