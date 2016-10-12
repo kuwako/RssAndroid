@@ -37,9 +37,9 @@ public class RssListAdapter extends ArrayAdapter<ArticleModel> {
 
         ArticleModel article = this.getItem(position);
         if (article != null) {
-            tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            tvTitle = (TextView) view.findViewById(R.id.title);
             tvTitle.setText(article.getTitle());
-            tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+            tvDescription = (TextView) view.findViewById(R.id.description);
             tvDescription.setText(article.getDescription());
         }
 

@@ -5,11 +5,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jp.kuwako.masaki.rssandroid.R;
 import jp.kuwako.masaki.rssandroid.activty.BaseActivity;
+import jp.kuwako.masaki.rssandroid.adapter.RssListAdapter;
+import jp.kuwako.masaki.rssandroid.model.ArticleModel;
 
 public class MainActivity extends BaseActivity {
+    private ListView lvArticleList;
+    private TextView tvNoData;
+
+    private List<ArticleModel> mList;
+    private RssListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +31,13 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO ListViewからadapterにつなぎ、list表示をさせる
-        // TODO ArticleのviewItemを作成する
+        lvArticleList = (ListView) findViewById(R.id.article_list);
+        tvNoData = (TextView) findViewById(R.id.no_data);
+        mList = new ArrayList<>();
+        mAdapter = new RssListAdapter(MainActivity.this, mList) {
+        };
+
+        lvArticleList.setAdapter(mAdapter);
         // TODO URLに接続し、RSS取得
         // TODO ButtenKnife入れる
     }

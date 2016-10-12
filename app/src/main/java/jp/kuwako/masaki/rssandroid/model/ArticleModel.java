@@ -7,6 +7,7 @@ import jp.kuwako.masaki.rssandroid.entity.Article;
  */
 
 public class ArticleModel extends Article {
+    // TODO 10文字にカットしたりする件
     public ArticleModel(String title, String link, String description, String pubDate) {
         this.title = title;
         this.link = link;
