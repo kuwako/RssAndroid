@@ -17,6 +17,7 @@ import jp.kuwako.masaki.rssandroid.activty.BaseActivity;
 import jp.kuwako.masaki.rssandroid.adapter.RssListAdapter;
 import jp.kuwako.masaki.rssandroid.model.ArticleModel;
 
+// TODO ButtenKnife入れる
 public class MainActivity extends BaseActivity {
     private ListView lvArticleList;
     private TextView tvNoData;
@@ -34,12 +35,14 @@ public class MainActivity extends BaseActivity {
         lvArticleList = (ListView) findViewById(R.id.article_list);
         tvNoData = (TextView) findViewById(R.id.no_data);
         mList = new ArrayList<>();
-        mAdapter = new RssListAdapter(MainActivity.this, mList) {
-        };
+        mAdapter = new RssListAdapter(MainActivity.this);
+        mAdapter.setArticleList(mList);
 
         lvArticleList.setAdapter(mAdapter);
         // TODO URLに接続し、RSS取得
-        // TODO ButtenKnife入れる
+        ArticleModel am = new ArticleModel("title", "link", "description", "2016-10-13 23:20:00");
+        mList.add(am);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
