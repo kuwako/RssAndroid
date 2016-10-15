@@ -1,23 +1,25 @@
 package jp.kuwako.masaki.rssandroid.activty;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -53,6 +55,22 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         lvArticleList = (ListView) findViewById(R.id.article_list);
+        lvArticleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                ArticleModel articleModel = (ArticleModel) listView.getItemAtPosition(position);
+                String link = articleModel.getLink();
+                if (link != null && !link.equals("")) {
+                    final CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
+                            .setShowTitle(true)
+                            .build();
+                    tabsIntent.launchUrl(MainActivity.this, Uri.parse(link));
+                } else {
+                    Toast.makeText(MainActivity.this, "linkがありません", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         tvNoData = (TextView) findViewById(R.id.no_data);
         mList = new ArrayList<>();
         mAdapter = new RssListAdapter(MainActivity.this);
