@@ -22,6 +22,7 @@ public class RssListAdapter extends BaseAdapter {
     private List<ArticleModel> mArticleList;
     private TextView tvTitle;
     private TextView tvDescription;
+    private TextView tvPubDate;
 
     public RssListAdapter(Context context) {
         mContext = context;
@@ -60,6 +61,8 @@ public class RssListAdapter extends BaseAdapter {
             tvTitle.setText(article.getFormatedTitle());
             tvDescription = (TextView) view.findViewById(R.id.description);
             tvDescription.setText(article.getFormatedDescription());
+            tvPubDate = (TextView) view.findViewById(R.id.pubDate);
+            tvPubDate.setText(article.getFormatedPubDate());
         }
 
         return view;

@@ -60,4 +60,8 @@ public class ArticleModel extends Article {
 
         return desc;
     }
+
+    public String getFormatedPubDate() {
+        return StringUtil.jstPubDate(this.pubDate);
+    }
 }
