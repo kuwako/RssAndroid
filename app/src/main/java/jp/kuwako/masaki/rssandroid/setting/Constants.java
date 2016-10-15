@@ -6,9 +6,8 @@ package jp.kuwako.masaki.rssandroid.setting;
  */
 
 public final class Constants {
-    private Constants() {
-    }
+    private Constants() {}
 
     public static int MAX_TITLE_LENGTH = 10;
-    public static int MAX_BODY_LENGTH = 30;
+    public static int MAX_DISCRIPTION_LENGTH = 30;
 }

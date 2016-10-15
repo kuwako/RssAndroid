@@ -1,6 +1,8 @@
 package jp.kuwako.masaki.rssandroid.model;
 
 import jp.kuwako.masaki.rssandroid.entity.Article;
+import jp.kuwako.masaki.rssandroid.setting.Constants;
+import jp.kuwako.masaki.rssandroid.util.StringUtil;
 
 /**
  * Created by m_kuwako on 2016/10/12.
@@ -45,5 +47,17 @@ public class ArticleModel extends Article {
 
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
+    }
+
+    public String getFormatedTitle() {
+        return StringUtil.cutText(this.title, Constants.MAX_TITLE_LENGTH);
+    }
+
+    public String getFormatedDescription() {
+        String desc;
+        desc = StringUtil.htmlTagRemover(this.description);
+        desc = StringUtil.cutText(desc, Constants.MAX_DISCRIPTION_LENGTH);
+
+        return desc;
     }
 }

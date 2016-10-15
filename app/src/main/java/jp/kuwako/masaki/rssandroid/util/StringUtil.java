@@ -8,13 +8,24 @@ public class StringUtil {
     /**
      * 指定された文字数 + ... を返す
      * @param text
-     * @param MaxLength
+     * @param maxLength
      * @return convertedText
      */
-    public static String getConvertedText(String text, int MaxLength) {
-        // TODO 処理
-        String conveertedText = "";
+    public static String cutText(String text, int maxLength) {
+        text = text.substring(0, maxLength);
 
-        return conveertedText;
+        return text + "...";
+    }
+
+    /**
+     * htmlタグの削除、改行文字の削除、空白文字の削除
+     * @param str
+     * @return
+     */
+    public static String htmlTagRemover(String str) {
+        str = str.replaceAll("<.+?>", "");
+        str = str.replaceAll("\n", "");
+        str = str.trim();
+        return str;
     }
 }

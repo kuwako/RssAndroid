@@ -57,9 +57,9 @@ public class RssListAdapter extends BaseAdapter {
         ArticleModel article = mArticleList.get(position);
         if (article != null) {
             tvTitle = (TextView) view.findViewById(R.id.title);
-            tvTitle.setText(article.getTitle());
+            tvTitle.setText(article.getFormatedTitle());
             tvDescription = (TextView) view.findViewById(R.id.description);
-            tvDescription.setText(article.getDescription());
+            tvDescription.setText(article.getFormatedDescription());
         }
 
         return view;
