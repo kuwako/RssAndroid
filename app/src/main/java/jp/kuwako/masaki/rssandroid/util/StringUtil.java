@@ -54,6 +54,6 @@ public class StringUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return "failed to format.";
+        return pubDate;
     }
 }

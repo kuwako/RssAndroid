@@ -17,6 +17,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,6 +28,7 @@ import butterknife.OnClick;
 import jp.kuwako.masaki.rssandroid.R;
 import jp.kuwako.masaki.rssandroid.adapter.RssListAdapter;
 import jp.kuwako.masaki.rssandroid.model.ArticleModel;
+import jp.kuwako.masaki.rssandroid.setting.Url;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -87,10 +91,18 @@ public class MainActivity extends BaseActivity {
             protected String doInBackground(Void... params) {
                 String res = null;
                 try {
-                    // TODO 別ファイルから取ってくるように改修
-                    res = run("http://tech.uzabase.com/rss");
-                    // XMLをパース
-                    parseXml(res);
+                    // urlListの要素はRSS2.0を想定。RSS1.0だとタグ名が違うため日付が表示されないが、今回は非実装予定
+                    List<String> urlList = Url.urlList;
+                    for (int i = 0; i < urlList.size(); i++) {
+                        res = run(urlList.get(i));
+                        // XMLをパース
+                        parseXml(res);
+                    }
+                    // 日付でソート
+                    Collections.sort(mList, new ArticleComp());
+                    Collections.reverse(mList);
+
+                    mAdapter.notifyDataSetChanged();
                 } catch(IOException e) {
                     e.printStackTrace();
                 } catch (XmlPullParserException e) {
@@ -147,7 +159,7 @@ public class MainActivity extends BaseActivity {
         return response.body().string();
     }
 
-    public class MyAsyncTask extends AsyncTask<Void, Void, String> {
+    private class MyAsyncTask extends AsyncTask<Void, Void, String> {
         public MyAsyncTask() {
             super();
         }
@@ -155,6 +167,13 @@ public class MainActivity extends BaseActivity {
         @Override
         protected String doInBackground(Void... params) {
             return null;
+        }
+    }
+
+    private static final class ArticleComp implements Comparator<ArticleModel> {
+        @Override
+        public int compare(ArticleModel o1, ArticleModel o2) {
+            return o1.getFormatedPubDate().compareTo(o2.getFormatedPubDate());
         }
     }
 
