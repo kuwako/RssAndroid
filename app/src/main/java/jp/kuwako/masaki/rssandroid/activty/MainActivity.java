@@ -1,12 +1,17 @@
 package jp.kuwako.masaki.rssandroid.activty;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +21,10 @@ import butterknife.OnClick;
 import jp.kuwako.masaki.rssandroid.R;
 import jp.kuwako.masaki.rssandroid.adapter.RssListAdapter;
 import jp.kuwako.masaki.rssandroid.model.ArticleModel;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-// TODO ButtenKnife入れる
 public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -28,6 +35,7 @@ public class MainActivity extends BaseActivity {
 
     private List<ArticleModel> mList;
     private RssListAdapter mAdapter;
+    private OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +51,8 @@ public class MainActivity extends BaseActivity {
         mAdapter.setArticleList(mList);
 
         lvArticleList.setAdapter(mAdapter);
-        // TODO URLに接続し、RSS取得
+        // URLに接続し、RSS取得&リストviewにセット
+        setRssFeed();
 
         // TODO サンプル用。削除。
         ArticleModel am = new ArticleModel("title", "link", "description", "2016-10-13 23:20:00");
@@ -73,7 +82,45 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.article_list)
-    public void onClick() {
+//    @OnClick(R.id.article_list)
+//    public void onClick() {
+//    }
+
+    private void setRssFeed() {
+        new MyAsyncTask() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String res = null;
+                try {
+                    // TODO 別ファイルから取ってくるように改修
+                    String result = run("http://tech.uzabase.com/rss");
+                    Log.d("@@@rss", result);
+
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                return res;
+            }
+        }.execute();
     }
+
+    public String run(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+    public class MyAsyncTask extends AsyncTask<Void, Void, String> {
+        public MyAsyncTask() {
+            super();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return null;
+        }
+    }
+
 }
