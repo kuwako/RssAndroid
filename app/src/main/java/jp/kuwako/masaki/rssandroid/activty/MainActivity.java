@@ -4,14 +4,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,11 +57,6 @@ public class MainActivity extends BaseActivity {
         lvArticleList.setAdapter(mAdapter);
         // URLに接続し、RSS取得&リストviewにセット
         setRssFeed();
-
-        // TODO サンプル用。削除。
-        ArticleModel am = new ArticleModel("title", "link", "description", "2016-10-13 23:20:00");
-        mList.add(0, am);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -82,10 +81,6 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @OnClick(R.id.article_list)
-//    public void onClick() {
-//    }
-
     private void setRssFeed() {
         new MyAsyncTask() {
             @Override
@@ -93,15 +88,55 @@ public class MainActivity extends BaseActivity {
                 String res = null;
                 try {
                     // TODO 別ファイルから取ってくるように改修
-                    String result = run("http://tech.uzabase.com/rss");
-                    Log.d("@@@rss", result);
-
+                    res = run("http://tech.uzabase.com/rss");
+                    // XMLをパース
+                    parseXml(res);
                 } catch(IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
                     e.printStackTrace();
                 }
                 return res;
             }
         }.execute();
+    }
+
+    private void parseXml(String xmlStr) throws XmlPullParserException {
+        XmlPullParser xmlPullParser = Xml.newPullParser();
+        xmlPullParser.setInput(new StringReader(xmlStr));
+        int eventType;
+        String tagName;
+        String title = "";
+        String link = "";
+        String description = "";
+        String pubDate = "";
+
+        try {
+            while ((eventType = xmlPullParser.next()) != XmlPullParser.END_DOCUMENT) {
+                tagName = xmlPullParser.getName();
+                if (eventType == XmlPullParser.START_TAG && "item".equals(tagName)) {
+                    // 初期化
+                    title = "";
+                    link = "";
+                    description = "";
+                    pubDate = "";
+                } else if (eventType == xmlPullParser.START_TAG && "title".equals(tagName)) {
+                    title = xmlPullParser.nextText();
+                } else if (eventType == xmlPullParser.START_TAG && "link".equals(tagName)) {
+                    link = xmlPullParser.nextText();
+                } else if (eventType == xmlPullParser.START_TAG && "description".equals(tagName)) {
+                    description = xmlPullParser.nextText();
+                } else if (eventType == xmlPullParser.START_TAG && "pubDate".equals(tagName)) {
+                    pubDate = xmlPullParser.nextText();
+                } else if (eventType == XmlPullParser.END_TAG && "item".equals(tagName)) {
+                    ArticleModel am = new ArticleModel(title, link, description, pubDate);
+                    mList.add(am);
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String run(String url) throws IOException {
