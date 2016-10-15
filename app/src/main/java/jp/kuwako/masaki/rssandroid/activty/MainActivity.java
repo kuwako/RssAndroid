@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Xml;
 import android.view.Menu;
@@ -38,10 +39,10 @@ import okhttp3.Response;
 public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.article_list)
-    ListView lvArticleList;
     @BindView(R.id.no_data)
     TextView tvNoData;
+    @BindView(R.id.article_list)
+    ListView lvArticleList;
 
     private List<ArticleModel> mList;
     private RssListAdapter mAdapter;
@@ -54,7 +55,6 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        lvArticleList = (ListView) findViewById(R.id.article_list);
         lvArticleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
