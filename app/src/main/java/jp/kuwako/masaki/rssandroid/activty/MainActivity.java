@@ -43,6 +43,8 @@ public class MainActivity extends BaseActivity {
     TextView tvNoData;
     @BindView(R.id.article_list)
     ListView lvArticleList;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private List<ArticleModel> mList;
     private RssListAdapter mAdapter;
@@ -72,6 +74,14 @@ public class MainActivity extends BaseActivity {
             }
         });
         tvNoData = (TextView) findViewById(R.id.no_data);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mList.clear();
+                mAdapter.notifyDataSetChanged();
+                setRssFeed();
+            }
+        });
         mList = new ArrayList<>();
         mAdapter = new RssListAdapter(MainActivity.this);
         mAdapter.setArticleList(mList);
@@ -119,8 +129,6 @@ public class MainActivity extends BaseActivity {
                     // 日付でソート
                     Collections.sort(mList, new ArticleComp());
                     Collections.reverse(mList);
-
-                    mAdapter.notifyDataSetChanged();
                 } catch(IOException e) {
                     e.printStackTrace();
                 } catch (XmlPullParserException e) {
@@ -128,7 +136,13 @@ public class MainActivity extends BaseActivity {
                 }
                 return res;
             }
+            @Override
+            protected void onPostExecute(String res) {
+                mAdapter.notifyDataSetChanged();
+            }
         }.execute();
+
+
     }
 
     private void parseXml(String xmlStr) throws XmlPullParserException {
@@ -163,7 +177,6 @@ public class MainActivity extends BaseActivity {
                     mList.add(am);
                 }
             }
-            mAdapter.notifyDataSetChanged();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,6 +199,9 @@ public class MainActivity extends BaseActivity {
         protected String doInBackground(Void... params) {
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String res) {}
     }
 
     private static final class ArticleComp implements Comparator<ArticleModel> {
