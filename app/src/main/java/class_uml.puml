@@ -1,0 +1,102 @@
+@startuml
+title: RSSリーダーのクラス図
+package activity {
+    class BaseActivity {
+        # void onCreate(Bundle savedInstanceState)
+    }
+    package MainActivity.java {
+        class MainActivity extends BaseActivity {
+            - toolbar : Toolbar
+            - tvNoData : TextView
+            - lvArticleList : ListView
+            - fab : FloatingActionButton
+            - List<ArticleModel> mList
+            - mAdapter : RssListAdapter
+            - client : OkHttpClient
+            # onCreate(savedInstanceState : Bundle) : void
+            + onCreateOptionsMenu(menu : Menu) : boolean
+            + onOptionsItemSelected(item : MenuItem) : boolean
+            - setRssFeed() : void
+            - parseXML(String xmlStr) : void
+            + run(String url) : String
+        }
+
+        class MyAsyncTask extends AsyncTask {
+            + MyAsyncTask()
+            # doInBackground() : String
+            # onPostExecute(res : String) : void
+        }
+
+        class AsyncTask<Void, Void, String>
+
+        class ArticleComp implements Comparator {
+            + compare(o1 : ArticleModel, o2 : ArticleModel) : int
+        }
+        class Comparator<ArticleModel>
+    }
+}
+
+class Article {
+    + title : String
+    + link : String
+    + description : String
+    + pubDate : String
+}
+
+class ArticleModel extends Article {
+    + ArticleModel(title : String, link : String, description : String, pubDate : String)
+    + getTitle() : String
+    + setTitle(title : String) : void
+    + getLink() : String
+    + setLink(String : link) : void
+    + getDescription() : String
+    + setDescription(description : String) : void
+    + getPubDate() : String
+    + setPubDate(pubDate : String) : void
+    + getFormatedTitle() : String
+    + getFormatedDescription() : String
+    + getFormatedPubDate() : String
+}
+
+package util {
+    class StringUtil <<utility>> {
+        + {static} cutText(text : String, maxLength : int) : String
+        + {static} htmlTagRemover(str : String) : String
+        + {static} jstPubDate(pubDate : String) : String
+    }
+}
+package setting {
+    class Constants {
+        - Constants()
+        + {static} MAX_TITLE_LENGTH : int = 10
+        + {static} MAX_DISCRIPTION_LENGTH : int = 30
+    }
+
+    class Url {
+        + {static} List<String>
+    }
+}
+
+class RssListAdapter {
+    + RssListAdapter(context : Context)
+    - mContext : Context
+    - mInflater : LayoutInflater
+    - mArticleList : List<ArticleModel>
+    - tvTitle : TextView
+    - tvDescription : TextView
+    - tvPubDate : TextView
+
+    + void setArticleList(List<ArticleModel> articleList)
+    + int getCount()
+    + Object getItem(i : int)
+    + long getItemId(i : int)
+    + View getView(position : int, convertView : View, parent : ViewGroup)
+}
+
+MainActivity <- MyAsyncTask
+MainActivity <- ArticleComp
+MainActivity <- RssListAdapter
+ArticleModel -- RssListAdapter
+ArticleModel <.. MainActivity
+
+@enduml
